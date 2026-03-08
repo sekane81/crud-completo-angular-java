@@ -1,0 +1,53 @@
+version: '3.8'
+
+services:
+
+  mysql:
+    image: mysql:8.0
+    container_name: mysql-db
+    environment:
+      MYSQL_ROOT_PASSWORD: root123
+      MYSQL_DATABASE: crud_usuarios
+    ports:
+      - "3307:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+    networks:
+      - crud-network
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-uroot", "-proot123"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  backend:
+    build: ./crud-usuarios
+    container_name: spring-backend
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/crud_usuarios
+      SPRING_DATASOURCE_USERNAME: root
+      SPRING_DATASOURCE_PASSWORD: root123
+    ports:
+      - "8080:8080"
+    depends_on:
+      mysql:
+        condition: service_healthy
+    networks:
+      - crud-network
+
+  frontend:
+    build: ./crud-usuarios-app
+    container_name: angular-frontend
+    ports:
+      - "80:80"
+    depends_on:
+      - backend
+    networks:
+      - crud-network
+
+volumes:
+  mysql_data:
+
+networks:
+  crud-network:
+    driver: bridge
