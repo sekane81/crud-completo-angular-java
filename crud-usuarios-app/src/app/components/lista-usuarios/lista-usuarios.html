@@ -1,0 +1,40 @@
+<div class="container mt-4">
+  <h2>👥 Gestión de Usuarios</h2>
+
+  <!-- Formulario crear/editar -->
+  <app-form-usuario
+    [usuario]="usuarioSeleccionado"
+    (guardado)="onGuardado()">
+  </app-form-usuario>
+
+  <!-- Tabla de usuarios -->
+  <table class="table table-striped table-bordered">
+    <thead class="table-dark">
+      <tr>
+        <th>ID</th>
+        <th>Nombre</th>
+        <th>Email</th>
+        <th>Teléfono</th>
+        <th>Acciones</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let usuario of usuarios">
+        <td>{{ usuario.id }}</td>
+        <td>{{ usuario.nombre }}</td>
+        <td>{{ usuario.email }}</td>
+        <td>{{ usuario.telefono }}</td>
+        <td>
+          <button class="btn btn-warning btn-sm me-2"
+                  (click)="seleccionarUsuario(usuario)">
+            ✏️ Editar
+          </button>
+          <button class="btn btn-danger btn-sm"
+                  (click)="eliminar(usuario.id!)">
+            🗑️ Eliminar
+          </button>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>
